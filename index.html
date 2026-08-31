@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Needle in a Haystack Simulator</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #fdf6e2; color: #5c3d12; margin: 0; padding: 20px; }
+        h1 { margin-bottom: 5px; }
+        #game-area { max-width: 600px; margin: 20px auto; background: #f5e4bc; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #d4b26f; }
+        #haystack { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-height: 400px; overflow-y: auto; padding: 15px; background: #fffdf9; border: 1px solid #e6cb95; border-radius: 8px; }
+        .hay { width: 14px; height: 14px; background: #f1c40f; border-radius: 2px; cursor: pointer; transition: transform 0.1s; }
+        .hay:hover { transform: scale(1.2); background: #f39c12; }
+        .needle { background: #7f8c8d !important; border-radius: 50%; width: 6px !important; margin: 4px; }
+        button { background: #d35400; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        button:hover { background: #e67e22; }
+        #stats { margin: 15px 0; font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Needle in a Haystack</h1>
+    <p>There are 5,000 pieces of hay. Can you spot the single grey needle?</p>
+
+    <div id="game-area">
+        <div id="stats">Clicks: <span id="click-count">0</span></div>
+        <div id="haystack"></div>
+        <button onclick="startGame()">Scatter New Hay</button>
+    </div>
+
+    <script>
+        let clicks = 0;
+        const totalHay = 5000;
+
+        function startGame() {
+            clicks = 0;
+            document.getElementById('click-count').innerText = clicks;
+            const container = document.getElementById('haystack');
+            container.innerHTML = '';
+            
+            // Pick a completely random index for the needle
+            const needleIndex = Math.floor(Math.random() * totalHay);
+
+            for (let i = 0; i < totalHay; i++) {
+                const item = document.createElement('div');
+                if (i === needleIndex) {
+                    item.className = 'hay needle';
+                    item.onclick = function() {
+                        clicks++;
+                        document.getElementById('click-count').innerText = clicks;
+                        alert(`🎉 YOU FOUND IT! It took you ${clicks} clicks to find the needle in the haystack!`);
+                    };
+                } else {
+                    item.className = 'hay';
+                    item.onclick = function() {
+                        clicks++;
+                        document.getElementById('click-count').innerText = clicks;
+                        this.style.opacity = '0.1'; // Fade out searched hay
+                        this.style.pointerEvents = 'none'; // Prevent clicking twice
+                    };
+                }
+                container.appendChild(item);
+            }
+        }
+
+        // Start the game automatically on load
+        startGame();
+    </script>
+</body>
+</html>
